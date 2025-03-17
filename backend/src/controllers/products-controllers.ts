@@ -7,7 +7,9 @@ class ProductController{
     async index(request: Request, response: Response, next: NextFunction){
         try{
 
-            return response.json({message: "está funcionando"})
+            const products = await knex<ProductRepository>("products").select().orderBy("name")
+
+            return response.json(products)
         }catch(error){
             next(error)
         }
