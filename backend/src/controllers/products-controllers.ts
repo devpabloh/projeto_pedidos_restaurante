@@ -1,4 +1,5 @@
 import {z} from "zod"
+import { AppError } from "@/utils/appError";
 import { Request, Response, NextFunction } from "express";
 import { knex } from "@/database/knex";
 
@@ -56,6 +57,12 @@ class ProductController{
     async remove(request: Request, response: Response, next: NextFunction){
         try {
             const id = z.string().transform((value)=> Number(value)).refine((value)=> !isNaN(value), {message:"Id must be a number!"}).parse(request.params.id)
+
+            const product = await knex<ProductRepository>("products").select().where({id}).first()
+
+            if(!product){
+                throw new AppError("Product not found!", product)
+            }
 
             await knex<ProductRepository>("products").delete().where({id})
 
