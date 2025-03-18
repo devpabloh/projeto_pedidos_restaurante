@@ -46,7 +46,7 @@ class ProductController{
 
             const {name, price, description} = bodySchema.parse(request.body)
 
-            const product = knex<ProductRepository>("products").select().where({id}).first()
+            const product = await knex<ProductRepository>("products").select().where({id}).first()
 
             if(!product){
                 throw new AppError("Product not found!", product)
