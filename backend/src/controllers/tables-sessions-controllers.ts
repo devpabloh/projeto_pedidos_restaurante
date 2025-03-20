@@ -1,12 +1,14 @@
 import {Request, Response, NextFunction } from 'express';
-import { knex } from '@/database/knex';
 
 class TablesSessionsControllers {
-    index(response: Response, request: Request, next: NextFunction){
+    async create(request: Request, response: Response, next: NextFunction){
         try {
-            
+          return response.status(201).json()  
         } catch (error) {
             next(error)
         }
     }
 }
+
+
+export  {TablesSessionsControllers}
