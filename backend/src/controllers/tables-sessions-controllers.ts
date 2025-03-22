@@ -38,6 +38,17 @@ class TablesSessionsControllers {
             next(error)
         }
     }
+
+    async update(request: Request, response: Response, next: NextFunction){
+        try{
+            const id = z.string().transform((value)=> Number(value)).refine((value)=> !isNaN(value), {message: "id must be a number"}).parse(request.params.id)
+
+            return response.json()
+
+        }catch(error){
+            next(error)
+        }
+    }
 }
 
 
