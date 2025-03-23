@@ -43,6 +43,20 @@ class TablesSessionsControllers {
         try{
             const id = z.string().transform((value)=> Number(value)).refine((value)=> !isNaN(value), {message: "id must be a number"}).parse(request.params.id)
 
+            const session = await knex<tablesSessionsRepository>("tables_sessions").select().where({id}).first()
+
+            if(!session){
+                throw new AppError("Session table not found")
+            }
+
+            if(session.closed_at){
+                throw new AppError("Session table is already closed")
+            }
+
+            await knex<tablesSessionsRepository>("tables_sessions").update({
+                closed_at: knex.fn.now(),
+            }).where({id})
+
             return response.json()
 
         }catch(error){
