@@ -18,14 +18,27 @@ class OrdersControllers {
             const session = await knex<tablesSessionsRepository>("tables_sessions").where({id: table_session_id}).first()
 
             if(!session){
-                throw new AppError("Session not found")
+                throw new AppError("Session table not found")
             }
 
             if(session.closed_at){
                 throw new AppError("This table is closed")
             }
 
-            return response.status(201).json(session)
+            const product = await knex<ProductRepository>("products").where({id: product_id}).first()
+
+            if(!product){
+                throw new AppError("Product not found")
+            }
+
+            await knex<OrderRepository>("orders").insert({
+                table_session_id, 
+                product_id,
+                quantity,
+                price: product.price
+            })
+
+            return response.status(201).json()
         } catch (error) {
         next(error)
         } 
